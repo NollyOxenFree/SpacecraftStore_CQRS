@@ -23,6 +23,7 @@ namespace SpaceShipStore.Controllers
         {
             _logger = logger;
             _commandHandler = new SpacecraftCommandHandler();
+            _queryHandler = new SpacecraftQueryHandler();
         }
 
         [HttpGet(Name = "GetFeaturedSpaceCraft")]
@@ -30,7 +31,17 @@ namespace SpaceShipStore.Controllers
         public IEnumerable<FeaturedSpacecraftDetails> GetFeatured()
         {
             // using query handler, get list of featured spacecrafts and show their details.
-            return null;
+            var command = new MarkSpacecraftAsFeatured(Guid.NewGuid());
+            _commandHandler.Handle(command);
+            return true;
+        }
+
+        [HttpPost(Name = "Add")]
+        public bool AddNewSpacecraft()
+        {
+            var spacecraft = new NewSpacecraft();
+            _commandHandler.Handle(spacecraft);
+            return true;
         }
     }
 }

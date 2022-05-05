@@ -1,6 +1,6 @@
 ﻿namespace Spacecraft.BusinessLayer.Commands
 {
-    internal class BuySpacecraft : ICommand
+    public class BuySpacecraft : ICommand
     {
         public BuySpacecraft(Guid id)
         {

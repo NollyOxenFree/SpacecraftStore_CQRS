@@ -8,7 +8,7 @@ namespace Spacecraft.BusinessLayer.Commands
 {
     public class SpacecraftCommandHandler : ICommandHandler<BuySpacecraft>, ICommandHandler<NewSpacecraft>, ICommandHandler<MarkSpacecraftAsFeatured>
     {
-        void ICommandHandler<BuySpacecraft>.Handle(BuySpacecraft command)
+        public void Handle(BuySpacecraft command)
         {
             // Submit Payment (synchronous -- fail call if payment fails)
             // Update Inventory (async)
@@ -17,7 +17,7 @@ namespace Spacecraft.BusinessLayer.Commands
             // Submit Thank you email (async)
         }
 
-        void ICommandHandler<NewSpacecraft>.Handle(NewSpacecraft command)
+        public void Handle(NewSpacecraft command)
         {
             // Add Spacecraft to Spacecraft data (synchronous -- fail call if insert fails)
             // Add to "New" list (async)

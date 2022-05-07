@@ -1,6 +1,6 @@
-- title : FsReveal
-- description : Introduction to FsReveal
-- author : Karlkim Suwanmongkol
+- title : CQRS
+- description : A quick explanation of the CQRS Patter
+- author : Nolly Oxen Free
 - theme : beige
 - transition : default
 
@@ -9,9 +9,10 @@
 ### What is CQRS
 
 Command and Query Responsibility Segregation
-'  So this is breaking out the concerns of Reading Data 
-' and Writing Data (Writing being Creating, Updating 
-' and Deleting - the CUD of CRUD)
+'  CQRS is the command and query responsibiltiy segregation pattern
+' This means breaking out and seperating the logic of what does reading data
+' from the logic that does all the other logic like Creating, Updating Deleting
+
 
 ***
 
@@ -27,12 +28,15 @@ Command and Query Responsibility Segregation
 
 **Like a User**
 
-' Often times, the model you have for READING data will 
-' have more fields, properties, information than a model
-' that would be used for CREATING that data.
-' Such as a User. A user might have a User ID that you 
-' generate for them. But when I ADD a user, it wouldn’t make 
-' sense to have a field for that, until I am READING that user.
+' The reason to break these are to have you your models be soley concerned for their operations
+' and only contain fields or data pertaining to their responsibility.
+' the models you use to read data might contain more information
+' than you need to create that data.
+' For instance a "User" might have an ID associated with it. But you wouldn't have that ID 
+' at the time you would create it. So your "CreateUser" model wouldn't have that ID field.
+' But maybe your "ReadUser" model would. This can be applied to other fields like
+' "CreationDate" or maybe you need a model to read inventory. And than can evolve on it's own
+' and that model wouldn't need to be concerned about how the inventory is updated. 
 
 ***
 
@@ -42,24 +46,48 @@ Command and Query Responsibility Segregation
 
 ### Commands
 **"Tasked-based"**
-' Commands should be “Tasked-based” or provide a means to
-' execute a full call chain / orchestrate one request,
-' rather than being “Data-centric” like, updating a field.
-' “Add User” might have multiple operations to execute, 
-' but you should have one command for it. 
+' Commands are responsible for executing the CUD operations.
+' Commands should be "Tasked-based" or provide a means to
+' execute a full call chain / orchestrate one request.
+' For example "AddUser" might have multiple steps- like 'Add User to DB'
+' and 'Generate profile' but those should all be part of the "AddUser" command.
 
 --- 
 
 ### Queries
 **Retrieves Data**
 
+' Queries are responsible for retrieving data for your program.
+' This data should be transformed or represented as DTOs
+' (Future Video)
+
+***
+
+### Handlers
+- Commands and Queries are typically executed via Handlers.
+' I've usually seen these as domain-centric orchestraters.
+' You would typically see a "UserHandler" that has multiple "Handle"
+' methods to invoke based on your query or command you are executing.
+
 ***
 
 ### Benefits
-* Evelve Separately to maximize performance, scalability, security
-* Commands can be queued and asynchronous
+* Evolve Separately 
+* Maximize performance, scalability, security
 * Queries cannot modify data. Just returns DTOs
+* Commands can be queued and asynchronous
 * Data stores can be separated and configured accordingly.
+
+' The benefits of breaking out your models and operations this way to
+' have them evolve separately. But also allows to manage performace, security
+' seperately. Which can help with Scalability.
+' Meaning that when you have queries, you know that they only are responsible for reading,
+' and they will never have the permissions to write data.
+' And then you can build your application to manage writing data how you need with out impacting
+' the reading operations. By executing queries as queue messages and submitting that
+' asynchronously.
+' And the data stores between these operations can also be managed seperately.
+' For instance, you can have a "view" of your db that your read models connect with and can be optimized for reading data.
 
 ---
 
@@ -67,4 +95,22 @@ Command and Query Responsibility Segregation
 * Not "DRY"
 * Complex implementation
 
+' The downsides to this are that this is not really a "DRY" implementation.
+' If your User model changes and now has more fields, like a Birthday or something,
+' then you have multiple classes, and methods to update- increasing that maintainability.
+' And while this pattern is conceptually easy to understand, it can be complex to implement
+' because this is typically implemented along side other patterns such as Event Sourcing or 
+' mediator patterns.
+
 ***
+
+### Resources:
+
+' Microsoft has a lot more you can dive in with CQRS Pattern for a more in-depth explanation of the pattern and why to use it.
+' Martin Fowler has great blog post about this as well.
+
+***
+
+### Demo!
+
+' Let's jump into some code!
